@@ -66,24 +66,20 @@ app.get('/webhook', (req, res) => {
 });
 
 app.post('/webhook', async (req, res) => {
-  try {
-    const formattedData = formatDataForDashboard(req.body);
-    const hotelName = req.body.Documents[0].Data[2][1];
-    const yesterdayData = await findYesterdayData(hotelName);
-
-    const performance = new Performance({
-      date: new Date(req.body.Documents[0].Data[5][1]),
-      hotel: hotelName,
-      ...formattedData,
-      variations: calculateVariations(formattedData, yesterdayData)
-    });
+    console.log('Webhook received at:', new Date().toISOString());
+    console.log('Request headers:', req.headers);
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
     
-    await performance.save();
-    res.sendStatus(200);
-  } catch (error) {
-    console.error('Error:', error);
-    res.sendStatus(500);
-  }
+    try {
+        const formattedData = formatDataForDashboard(req.body);
+        console.log('Formatted data:', formattedData);
+        await new Performance(formattedData).save();
+        console.log('Data saved to MongoDB');
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error:', error);
+        res.sendStatus(500);
+    }
 });
 
 // Utilisez le port fourni par Render, sinon fallback sur 3000
