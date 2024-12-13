@@ -83,8 +83,7 @@ app.post('/webhook', async (req, res) => {
     }
 });
 
-const port = 3001;
+const port = process.env.PORT || 3000;
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server running on port ${port}`);
-    console.log(`Webhook URL: https://f65a-2a01-cb04-68e-a300-f143-351f-b198-bfd9.ngrok-free.app/webhook`);
 });
